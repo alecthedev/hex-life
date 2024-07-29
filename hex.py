@@ -20,30 +20,23 @@ class Hex:
         return f"Hex at ({self.q},{self.r},{self.s}), state: {self.state}"
 
     def update(self):
+        # only check if alive
         if self.state == 1:
-            # only check if alive
-            self.check_rule_1()
-            self.check_rule_2()
-            self.check_rule_3()
+            # rule 1: A live cell dies if fewer than 2 live neighbors
+            if self.live_neighbors < 2:
+                self.state = 0
+
+            # rule 2: A live cell continues if 2 to 3 live neighbors
+
+            # rule 3: A live cell dies if greater than 3 live neighbors
+            if self.live_neighbors > 3:
+                self.state = 0
+
+        # only check if dead
         else:
-            # only check if dead
-            self.check_rule_4()
-
-    def check_rule_1(self):
-        # rule 1: A live cell dies if fewer than 2 live neighbors
-        pass
-
-    def check_rule_2(self):
-        # rule 2: A live cell continues if 2 to 3 live neighbors
-        pass
-
-    def check_rule_3(self):
-        # rule 3: A live cell dies if greater than 3 live neighbors
-        pass
-
-    def check_rule_4(self):
-        # rule 4: A dead cell becomes live if exactly 3 live neighbors
-        pass
+            # rule 4: A dead cell becomes live if exactly 3 live neighbors
+            if self.live_neighbors == 3:
+                self.state = 1
 
     def calc_vertices(self):
         vertices = []
@@ -91,9 +84,8 @@ class HexManager:
 
         self.generate_world()
         self.seed_world()
-        self.update_world()
 
-    def update_world(self):
+    def update_world(self, event=None):
         # update neighbors for each cell
         for hex in self.hexes.values():
             hex.live_neighbors = self.get_live_neighbors(hex)
@@ -105,6 +97,7 @@ class HexManager:
         # draw each cell
         self.animate()
         self.generation += 1
+        print(self.generation)
 
     def get_live_neighbors(self, hex):
         live_neighbors = 0
@@ -129,6 +122,7 @@ class HexManager:
                 if rand.randint(0, 10) == 0:
                     hex.state = 1
                     hex.draw()
+                    self.animate()
                     num_alive += 1
 
     def generate_world(self):
