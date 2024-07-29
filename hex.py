@@ -1,3 +1,4 @@
+import random as rand
 from math import cos, pi, sin, sqrt
 
 from vector2 import Vector2
@@ -12,7 +13,7 @@ class Hex:
         self.canvas = canvas
         self.vertices = []
         self.neighbors = []
-        self.state = 1
+        self.state = 0
 
     def __repr__(self) -> str:
         return f"Hex at ({self.q},{self.r},{self.s}), state: {self.state}"
@@ -38,7 +39,48 @@ class Hex:
         for v in self.vertices:
             points.append(v.x)
             points.append(v.y)
-        self.canvas.create_polygon(points, fill=color)
+        self.canvas.create_polygon(points, fill=color, outline="grey15")
+
+
+class HexManager:
+    def __init__(
+        self, origin: Vector2, hex_size: int, world_size: int, canvas, seed=None
+    ):
+        self.origin = origin
+        self.hex_size = hex_size
+        self.world_size = world_size
+        self.canvas = canvas
+        self.hexes = {}
+
+        if seed:
+            rand.seed(seed)
+
+        self.generate_world()
+
+    def generate_world(self):
+        self.calc_spiral()
+        self.draw_spiral()
+
+    def calc_spiral(self):
+        q, r, s = 0, 0, 0
+        self.hexes[(q, r, s)] = Hex(q, r, s, self.canvas, self.hex_size, self.origin)
+        for ring in range(self.world_size + 1):
+            q, r, s = -ring, ring, 0
+            for dir in hex_directions:
+                for _ in range(ring):
+                    q += dir.q
+                    r += dir.r
+                    s += dir.s
+                    self.hexes[(q, r, s)] = Hex(
+                        q, r, s, self.canvas, self.hex_size, self.origin
+                    )
+
+    def draw_spiral(self):
+        for hex in self.hexes.values():
+            self.draw_hex(hex)
+
+    def draw_hex(self, hex):
+        hex.draw()
 
 
 def pixel_to_hex(hex: Hex, vector: Vector2):
