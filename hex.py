@@ -1,5 +1,6 @@
 import random as rand
 from math import cos, pi, sin, sqrt
+from time import sleep
 
 from vector2 import Vector2
 
@@ -81,6 +82,11 @@ class HexManager:
 
     def draw_hex(self, hex):
         hex.draw()
+        self.animate()
+
+    def animate(self):
+        sleep(0.005)
+        self.canvas.update()
 
 
 def pixel_to_hex(hex: Hex, vector: Vector2):
