@@ -13,7 +13,7 @@ class Hex:
         self.center = hex_to_pixel(q, r, size, origin)
         self.canvas = canvas
         self.vertices = []
-        self.neighbors = []
+        self.live_neighbors = 0
         self.state = 0
 
     def __repr__(self) -> str:
@@ -94,7 +94,33 @@ class HexManager:
         self.update_world()
 
     def update_world(self):
+        # update neighbors for each cell
+        for hex in self.hexes.values():
+            hex.live_neighbors = self.get_live_neighbors(hex)
+        # check rules for each AFTER updating their neighbors
+        for hex in self.hexes.values():
+            hex.update()
+            hex.draw()
+
+        # draw each cell
+        self.animate()
         self.generation += 1
+
+    def get_live_neighbors(self, hex):
+        live_neighbors = 0
+        for dir in hex_directions:
+            n_q = hex.q + dir.q
+            n_r = hex.r + dir.r
+            n_s = hex.s + dir.s
+            n_pos = (n_q, n_r, n_s)
+            if self.check_neighbor_exists(n_pos):
+                # append only if alive
+                if self.hexes[n_pos].state == 1:
+                    live_neighbors += 1
+        return live_neighbors
+
+    def check_neighbor_exists(self, hex_pos):
+        return hex_pos in self.hexes
 
     def seed_world(self):
         num_alive = 0
@@ -102,7 +128,7 @@ class HexManager:
             for hex in self.hexes.values():
                 if rand.randint(0, 10) == 0:
                     hex.state = 1
-                    self.draw_hex(hex)
+                    hex.draw()
                     num_alive += 1
 
     def generate_world(self):
@@ -125,11 +151,8 @@ class HexManager:
 
     def draw_spiral(self):
         for hex in self.hexes.values():
-            self.draw_hex(hex)
-
-    def draw_hex(self, hex):
-        hex.draw()
-        self.animate()
+            hex.draw()
+            self.animate()
 
     def animate(self):
         self.canvas.update()
