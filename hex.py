@@ -58,7 +58,7 @@ class Hex:
 
     def draw(self):
         assert self.canvas is not None
-        color = "white"
+        color = "#0e802a"
         if self.state == 0:
             color = "black"
         self.vertices = self.calc_vertices()
@@ -66,7 +66,13 @@ class Hex:
         for v in self.vertices:
             points.append(v.x)
             points.append(v.y)
-        self.canvas.create_polygon(points, fill=color, outline="grey15")
+        self.canvas.create_polygon(
+            points,
+            fill=color,
+            outline="grey10",
+            # outline="black",
+            width=self.size // 3,
+        )
 
 
 class HexManager:
@@ -89,7 +95,6 @@ class HexManager:
 
     def update_world(self):
         self.generation += 1
-        # self.canvas.after(50, self.update_world())
 
     def seed_world(self):
         num_alive = 0
@@ -127,8 +132,8 @@ class HexManager:
         self.animate()
 
     def animate(self):
-        sleep(0.005)
         self.canvas.update()
+        self.canvas.update_idletasks()
 
 
 def pixel_to_hex(hex: Hex, vector: Vector2):
