@@ -19,6 +19,32 @@ class Hex:
     def __repr__(self) -> str:
         return f"Hex at ({self.q},{self.r},{self.s}), state: {self.state}"
 
+    def update(self):
+        if self.state == 1:
+            # only check if alive
+            self.check_rule_1()
+            self.check_rule_2()
+            self.check_rule_3()
+        else:
+            # only check if dead
+            self.check_rule_4()
+
+    def check_rule_1(self):
+        # rule 1: A live cell dies if fewer than 2 live neighbors
+        pass
+
+    def check_rule_2(self):
+        # rule 2: A live cell continues if 2 to 3 live neighbors
+        pass
+
+    def check_rule_3(self):
+        # rule 3: A live cell dies if greater than 3 live neighbors
+        pass
+
+    def check_rule_4(self):
+        # rule 4: A dead cell becomes live if exactly 3 live neighbors
+        pass
+
     def calc_vertices(self):
         vertices = []
         for i in range(6):
@@ -52,11 +78,27 @@ class HexManager:
         self.world_size = world_size
         self.canvas = canvas
         self.hexes = {}
+        self.generation = 0
 
         if seed:
             rand.seed(seed)
 
         self.generate_world()
+        self.seed_world()
+        self.update_world()
+
+    def update_world(self):
+        self.generation += 1
+        # self.canvas.after(50, self.update_world())
+
+    def seed_world(self):
+        num_alive = 0
+        while num_alive < len(self.hexes) // 10:
+            for hex in self.hexes.values():
+                if rand.randint(0, 10) == 0:
+                    hex.state = 1
+                    self.draw_hex(hex)
+                    num_alive += 1
 
     def generate_world(self):
         self.calc_spiral()
