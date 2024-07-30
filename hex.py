@@ -15,31 +15,40 @@ class Hex:
         self.vertices = []
         self.live_neighbors = 0
         self.state = 0
+        self.next_state = 0
+        self.state_changed = False
 
     def __repr__(self) -> str:
         return f"Hex at ({self.q},{self.r},{self.s}), state: {self.state}"
 
-    def update(self):
+    def check_state(self):
         old_state = self.state
+        self.next_state = self.state
         # only check if alive
         if self.state == 1:
             # rule 1: A live cell dies if fewer than 2 live neighbors
             if self.live_neighbors < 2:
-                self.state = 0
+                self.next_state = 0
 
             # rule 2: A live cell continues if 2 to 3 live neighbors
 
             # rule 3: A live cell dies if greater than 3 live neighbors
             if self.live_neighbors > 3:
-                self.state = 0
+                self.next_state = 0
 
         # only check if dead
         else:
             # rule 4: A dead cell becomes live if exactly 3 live neighbors
             if self.live_neighbors == 3:
-                self.state = 1
-        if old_state != self.state:
-            # state changed, redraw
+                self.next_state = 1
+        if old_state != self.next_state:
+            # state changed
+            self.state_changed = True
+
+    def update_state(self):
+        if self.state_changed:
+            self.state = self.next_state
+            self.state_changed = False
             self.draw()
 
     def calc_vertices(self):
@@ -97,7 +106,10 @@ class HexManager:
             hex.live_neighbors = self.get_live_neighbors(hex)
         # check rules for each AFTER updating their live neighbor count
         for hex in self.hexes.values():
-            hex.update()
+            hex.check_state()
+        # update state for each hex based on rules checked last loop
+        for hex in self.hexes.values():
+            hex.update_state()
 
         self.animate()
         self.generation += 1
