@@ -14,7 +14,7 @@ canvas.pack()
 num = randint(0, 999)
 print(num)
 
-hex_manager = HexManager(Vector2(WIDTH // 2, HEIGHT // 2), 4, 70, canvas, seed=5)
+hex_manager = HexManager(Vector2(WIDTH // 2, HEIGHT // 2), 4, 70, canvas, seed=None)
 root.bind("<Return>", hex_manager.toggle_running)
 
 root.mainloop()

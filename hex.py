@@ -137,7 +137,7 @@ class HexManager:
     def seed_world(self):
         num_alive = 0
         for hex in self.hexes.values():
-            if rand.randint(1, 10) == 1:
+            if rand.randint(1, 3) == 1:
                 hex.state = 1
                 hex.draw()
                 # self.animate()
