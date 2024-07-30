@@ -97,6 +97,13 @@ class HexManager:
 
         self.generate_world()
 
+        self.canvas.bind(
+            "<Button-1>", lambda event, state=1: self.set_hex_state(event, state)
+        )
+        self.canvas.bind(
+            "<Button-3>", lambda event, state=0: self.set_hex_state(event, state)
+        )
+
     def update_world(self, event=None):
         # while self.running:
         # update neighbors for each cell
@@ -111,7 +118,6 @@ class HexManager:
 
         self.animate()
         self.generation += 1
-        print(self.generation)
 
         if self.running:
             self.canvas.after(250, self.update_world)
@@ -140,7 +146,7 @@ class HexManager:
         return hex_pos in self.hexes
 
     def seed_world(self, event=None):
-        self.generate_world()
+        self.reset_world()
         num_alive = 0
         for hex in self.hexes.values():
             if rand.randint(1, 3) == 1:
@@ -182,10 +188,16 @@ class HexManager:
         if self.running:
             self.update_world()
 
+    def set_hex_state(self, event, state):
+        click_pos = pixel_to_hex(self.hex_size, Vector2(event.x, event.y) - self.origin)
+        clicked_hex = self.hexes[(click_pos)]
+        clicked_hex.state = state
+        clicked_hex.draw()
 
-def pixel_to_hex(hex: Hex, vector: Vector2):
-    q = (sqrt(3) / 3 * vector.x - 1 / 3 * vector.y) / hex.size
-    r = (2 / 3 * vector.y) / hex.size
+
+def pixel_to_hex(hex_size, vector: Vector2):
+    q = int(sqrt(3) / 3 * vector.x - 1 / 3 * vector.y) // hex_size
+    r = int(2 / 3 * vector.y) // hex_size
     return q, r, -q - r
 
 
