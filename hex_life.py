@@ -1,3 +1,4 @@
+from random import randint
 from tkinter import Canvas, Tk
 
 from hex import HexManager
@@ -10,7 +11,13 @@ root.title("Hex Life - github.com/alecthedev")
 canvas = Canvas(root, width=WIDTH, height=HEIGHT, bg="black")
 canvas.pack()
 
-hex_manager = HexManager(Vector2(WIDTH // 2, HEIGHT // 2), 12, 20, canvas, seed=5)
-root.bind("<Return>", hex_manager.update_world)
+num = randint(0, 999)
+print(num)
+
+hex_manager = HexManager(Vector2(WIDTH // 2, HEIGHT // 2), 4, 70, canvas, seed=num)
+root.bind("<Return>", hex_manager.toggle_running)
 
 root.mainloop()
+
+# neat:
+# 404, 459

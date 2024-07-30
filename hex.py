@@ -20,6 +20,7 @@ class Hex:
         return f"Hex at ({self.q},{self.r},{self.s}), state: {self.state}"
 
     def update(self):
+        old_state = self.state
         # only check if alive
         if self.state == 1:
             # rule 1: A live cell dies if fewer than 2 live neighbors
@@ -37,6 +38,9 @@ class Hex:
             # rule 4: A dead cell becomes live if exactly 3 live neighbors
             if self.live_neighbors == 3:
                 self.state = 1
+        if old_state != self.state:
+            # state changed, redraw
+            self.draw()
 
     def calc_vertices(self):
         vertices = []
@@ -78,6 +82,7 @@ class HexManager:
         self.canvas = canvas
         self.hexes = {}
         self.generation = 0
+        self.running = False
 
         if seed:
             rand.seed(seed)
@@ -85,19 +90,21 @@ class HexManager:
         self.generate_world()
         self.seed_world()
 
-    def update_world(self, event=None):
+    def update_world(self):
+        # while self.running:
         # update neighbors for each cell
         for hex in self.hexes.values():
             hex.live_neighbors = self.get_live_neighbors(hex)
-        # check rules for each AFTER updating their neighbors
+        # check rules for each AFTER updating their live neighbor count
         for hex in self.hexes.values():
             hex.update()
-            hex.draw()
 
-        # draw each cell
         self.animate()
         self.generation += 1
         print(self.generation)
+
+        if self.running:
+            self.canvas.after(250, self.update_world)
 
     def get_live_neighbors(self, hex):
         live_neighbors = 0
@@ -117,13 +124,14 @@ class HexManager:
 
     def seed_world(self):
         num_alive = 0
-        while num_alive < len(self.hexes) // 10:
-            for hex in self.hexes.values():
-                if rand.randint(0, 10) == 0:
-                    hex.state = 1
-                    hex.draw()
-                    self.animate()
-                    num_alive += 1
+        for hex in self.hexes.values():
+            if rand.randint(1, 10) == 1:
+                hex.state = 1
+                hex.draw()
+                # self.animate()
+                num_alive += 1
+                if num_alive >= len(self.hexes) // 5:
+                    return
 
     def generate_world(self):
         self.calc_spiral()
@@ -146,11 +154,15 @@ class HexManager:
     def draw_spiral(self):
         for hex in self.hexes.values():
             hex.draw()
-            self.animate()
 
     def animate(self):
         self.canvas.update()
         self.canvas.update_idletasks()
+
+    def toggle_running(self, event=None):
+        self.running = not self.running
+        if self.running:
+            self.update_world()
 
 
 def pixel_to_hex(hex: Hex, vector: Vector2):
