@@ -12,7 +12,7 @@ class Hex:
         self.size = size
         self.center = hex_to_pixel(q, r, size, origin)
         self.canvas = canvas
-        self.vertices = []
+        self.vertices = self.calc_vertices()
         self.live_neighbors = 0
         self.state = 0
         self.next_state = 0
@@ -67,7 +67,6 @@ class Hex:
         color = "#0e802a"
         if self.state == 0:
             color = "black"
-        self.vertices = self.calc_vertices()
         points = []
         for v in self.vertices:
             points.append(v.x)
