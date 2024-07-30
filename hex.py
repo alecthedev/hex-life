@@ -96,9 +96,8 @@ class HexManager:
             rand.seed(seed)
 
         self.generate_world()
-        self.seed_world()
 
-    def update_world(self):
+    def update_world(self, event=None):
         # while self.running:
         # update neighbors for each cell
         for hex in self.hexes.values():
@@ -117,6 +116,13 @@ class HexManager:
         if self.running:
             self.canvas.after(250, self.update_world)
 
+    def reset_world(self, event=None):
+        self.running = False
+        self.generation = 0
+        self.hexes = {}
+        self.generate_world()
+        self.animate()
+
     def get_live_neighbors(self, hex):
         live_neighbors = 0
         for dir in hex_directions:
@@ -133,7 +139,8 @@ class HexManager:
     def check_neighbor_exists(self, hex_pos):
         return hex_pos in self.hexes
 
-    def seed_world(self):
+    def seed_world(self, event=None):
+        self.generate_world()
         num_alive = 0
         for hex in self.hexes.values():
             if rand.randint(1, 3) == 1:
