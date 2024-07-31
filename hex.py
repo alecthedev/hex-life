@@ -119,7 +119,7 @@ class HexManager:
         self.animate()
         self.generation += 1
 
-        if self.running:
+        if self.running and event is None:
             self.canvas.after(250, self.update_world)
 
     def reset_world(self, event=None):
