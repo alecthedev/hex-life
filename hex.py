@@ -27,19 +27,19 @@ class Hex:
         # only check if alive
         if self.state == 1:
             # rule 1: A live cell dies if fewer than 2 live neighbors
-            if self.live_neighbors < 2:
+            if self.live_neighbors < 3:
                 self.next_state = 0
 
             # rule 2: A live cell continues if 2 to 3 live neighbors
 
             # rule 3: A live cell dies if greater than 3 live neighbors
-            if self.live_neighbors > 3:
+            if self.live_neighbors >= 4:
                 self.next_state = 0
 
         # only check if dead
         else:
             # rule 4: A dead cell becomes live if exactly 3 live neighbors
-            if self.live_neighbors == 3:
+            if self.live_neighbors == 2:
                 self.next_state = 1
         if old_state != self.next_state:
             # state changed
@@ -76,6 +76,7 @@ class Hex:
             fill=color,
             outline="grey10",
             # outline="black",
+            activefill="#243a2a",
             width=self.size // 3,
         )
 
@@ -101,7 +102,13 @@ class HexManager:
             "<Button-1>", lambda event, state=1: self.set_hex_state(event, state)
         )
         self.canvas.bind(
+            "<B1-Motion>", lambda event, state=1: self.set_hex_state(event, state)
+        )
+        self.canvas.bind(
             "<Button-3>", lambda event, state=0: self.set_hex_state(event, state)
+        )
+        self.canvas.bind(
+            "<B3-Motion>", lambda event, state=0: self.set_hex_state(event, state)
         )
 
     def update_world(self, event=None):
@@ -191,20 +198,41 @@ class HexManager:
     def set_hex_state(self, event, state):
         click_pos = pixel_to_hex(self.hex_size, Vector2(event.x, event.y) - self.origin)
         clicked_hex = self.hexes[(click_pos)]
-        clicked_hex.state = state
-        clicked_hex.draw()
+        if state != clicked_hex.state:
+            clicked_hex.state = state
+            clicked_hex.draw()
+            print(f"clicked {clicked_hex}")
 
 
 def pixel_to_hex(hex_size, vector: Vector2):
-    q = int(sqrt(3) / 3 * vector.x - 1 / 3 * vector.y) // hex_size
-    r = int(2 / 3 * vector.y) // hex_size
-    return q, r, -q - r
+    q = (sqrt(3) / 3 * vector.x - 1 / 3 * vector.y) / hex_size
+    r = (2 / 3 * vector.y) / hex_size
+    return round_hex(q, r, -q - r)
 
 
 def hex_to_pixel(q, r, size, origin):
     x = size * (sqrt(3) * q + sqrt(3) / 2 * r) + origin.x
     y = size * (3 / 2 * r) + origin.y
     return Vector2(x, y)
+
+
+def round_hex(frac_q, frac_r, frac_s):
+    q = round(frac_q)
+    r = round(frac_r)
+    s = round(frac_s)
+
+    q_diff = abs(q - frac_q)
+    r_diff = abs(r - frac_r)
+    s_diff = abs(s - frac_s)
+
+    if q_diff > r_diff and q_diff > s_diff:
+        q = -r - s
+    elif r_diff > s_diff:
+        r = -q - s
+    else:
+        s = -q - r
+
+    return q, r, s
 
 
 hex_directions = [
