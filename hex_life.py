@@ -9,12 +9,6 @@ print("Launching Simulation...")
 
 WIDTH, HEIGHT = 1000, 875
 
-# seed generation
-# TODO: update seed generation to larger range, store/display for user?
-num = randint(0, 999)
-print(f"seed: {num}")
-
-
 # create window and frames
 root = Tk()
 root.title("Hex Life - github.com/alecthedev")
@@ -23,7 +17,7 @@ controls = ttk.Frame(root)
 
 # create canvas for drawing, create simulation manager
 canvas = Canvas(content, width=WIDTH, height=HEIGHT, bg="black")
-hex_manager = HexManager(Vector2(WIDTH // 2, HEIGHT // 2), 10, 28, canvas, seed=num)
+hex_manager = HexManager(Vector2(WIDTH // 2, HEIGHT // 2), 10, 28, canvas)
 
 # create labels and buttons
 generation_label = ttk.Label(content, text=f"Generation: {hex_manager.generation}")

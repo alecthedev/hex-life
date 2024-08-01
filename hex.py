@@ -82,9 +82,7 @@ class Hex:
 
 
 class HexManager:
-    def __init__(
-        self, origin: Vector2, hex_size: int, world_size: int, canvas, seed=None
-    ):
+    def __init__(self, origin: Vector2, hex_size: int, world_size: int, canvas):
         self.origin = origin
         self.hex_size = hex_size
         self.world_size = world_size
@@ -92,9 +90,6 @@ class HexManager:
         self.hexes = {}
         self.generation = 0
         self.running = False
-
-        if seed:
-            rand.seed(seed)
 
         self.generate_world()
 
