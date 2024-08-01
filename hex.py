@@ -26,19 +26,19 @@ class Hex:
         self.next_state = self.state
         # only check if alive
         if self.state == 1:
-            # rule 1: A live cell dies if fewer than 2 live neighbors
+            # rule 1: A live cell dies if fewer than 3 live neighbors
             if self.live_neighbors < 3:
                 self.next_state = 0
 
-            # rule 2: A live cell continues if 2 to 3 live neighbors
+            # rule 2: A live cell continues if 3 live neighbors
 
-            # rule 3: A live cell dies if greater than 3 live neighbors
+            # rule 3: A live cell dies if 4 or more live neighbors
             if self.live_neighbors >= 4:
                 self.next_state = 0
 
         # only check if dead
         else:
-            # rule 4: A dead cell becomes live if exactly 3 live neighbors
+            # rule 4: A dead cell becomes live if exactly 2 live neighbors
             if self.live_neighbors == 2:
                 self.next_state = 1
         if old_state != self.next_state:
@@ -197,11 +197,13 @@ class HexManager:
 
     def set_hex_state(self, event, state):
         click_pos = pixel_to_hex(self.hex_size, Vector2(event.x, event.y) - self.origin)
-        clicked_hex = self.hexes[(click_pos)]
-        if state != clicked_hex.state:
+        clicked_hex = None
+        if (click_pos) in self.hexes:
+            clicked_hex = self.hexes[(click_pos)]
+
+        if clicked_hex is not None and state != clicked_hex.state:
             clicked_hex.state = state
             clicked_hex.draw()
-            print(f"clicked {clicked_hex}")
 
 
 def pixel_to_hex(hex_size, vector: Vector2):

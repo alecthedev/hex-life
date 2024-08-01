@@ -7,7 +7,7 @@ from vector2 import Vector2
 print("Launching Simulation...")
 
 
-WIDTH, HEIGHT = 1200, 850
+WIDTH, HEIGHT = 1000, 875
 
 # seed generation
 # TODO: update seed generation to larger range, store/display for user?
@@ -23,7 +23,7 @@ controls = ttk.Frame(root)
 
 # create canvas for drawing, create simulation manager
 canvas = Canvas(content, width=WIDTH, height=HEIGHT, bg="black")
-hex_manager = HexManager(Vector2(WIDTH // 2, HEIGHT // 2), 4, 70, canvas, seed=None)
+hex_manager = HexManager(Vector2(WIDTH // 2, HEIGHT // 2), 10, 28, canvas, seed=num)
 
 # create labels and buttons
 generation_label = ttk.Label(content, text=f"Generation: {hex_manager.generation}")
