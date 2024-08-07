@@ -89,17 +89,23 @@ class HexManager:
         self.generation = 0
         self.running = False
 
-        self.world_sizes = {
+        self.world_sizes = {  # (hex_size, world_size)
             "small": (15, 18),
             "medium": (10, 28),
             "large": (7, 40),
             "huge": (4, 70),
         }
-
         self.curr_size = self.world_sizes["medium"]
-
         self.hex_size = self.curr_size[0]
         self.world_size = self.curr_size[1]
+
+        self.speeds = {  # determines update_world freq in millisec
+            "slow": 750,
+            "normal": 200,
+            "fast": 100,
+            "faster": 50,
+        }
+        self.curr_speed = self.speeds["normal"]
 
         self.generate_world()
 
@@ -116,9 +122,30 @@ class HexManager:
             "<B3-Motion>", lambda event, state=0: self.set_hex_state(event, state)
         )
 
+    def increase_speed(self, event=None):
+        if self.curr_speed == self.speeds["slow"]:
+            self.curr_speed = self.speeds["normal"]
+        elif self.curr_speed == self.speeds["normal"]:
+            self.curr_speed = self.speeds["fast"]
+        elif self.curr_speed == self.speeds["fast"]:
+            self.curr_speed = self.speeds["faster"]
+        else:
+            return
+
+    def decrease_speed(self, event=None):
+        if self.curr_speed == self.speeds["faster"]:
+            self.curr_speed = self.speeds["fast"]
+        elif self.curr_speed == self.speeds["fast"]:
+            self.curr_speed = self.speeds["normal"]
+        elif self.curr_speed == self.speeds["normal"]:
+            self.curr_speed = self.speeds["slow"]
+        else:
+            return
+
     def update_size(self, hex_size, world_size):
         self.hex_size = hex_size
         self.world_size = world_size
+        self.reset_world()
 
     def increase_world_size(self):
         if self.curr_size == self.world_sizes["small"]:
@@ -130,7 +157,6 @@ class HexManager:
         else:
             return
         self.update_size(self.curr_size[0], self.curr_size[1])
-        self.reset_world()
 
     def decrease_world_size(self):
         if self.curr_size == self.world_sizes["huge"]:
@@ -142,7 +168,6 @@ class HexManager:
         else:
             return
         self.update_size(self.curr_size[0], self.curr_size[1])
-        self.reset_world()
 
     def update_world(self, event=None):
         # while self.running:
@@ -160,7 +185,7 @@ class HexManager:
         self.generation += 1
 
         if self.running and event is None:
-            self.canvas.after(250, self.update_world)
+            self.canvas.after(self.curr_speed, self.update_world)
 
     def reset_world(self, event=None):
         self.canvas.create_rectangle(

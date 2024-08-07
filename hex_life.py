@@ -48,12 +48,10 @@ play_pause_button = ttk.Button(
 )
 step_button = ttk.Button(controls, text="Next Gen", command=hex_manager.update_world)
 speed_inc_button = ttk.Button(
-    controls,
-    text="Speed +",
+    controls, text="Speed +", command=hex_manager.increase_speed
 )
 speed_dec_button = ttk.Button(
-    controls,
-    text="Speed −",
+    controls, text="Speed −", command=hex_manager.decrease_speed
 )
 speed_label_text = "Speed: █ █ _ _"
 speed_label = ttk.Label(controls, text=speed_label_text)
@@ -117,7 +115,16 @@ def update_size_label():
 
 
 def update_speed_label():
-    return ""
+    label = "Speed: "
+    if hex_manager.curr_speed == hex_manager.speeds["slow"]:
+        label += "█ _ _ _"
+    elif hex_manager.curr_speed == hex_manager.speeds["normal"]:
+        label += "█ █ _ _"
+    elif hex_manager.curr_speed == hex_manager.speeds["fast"]:
+        label += "█ █ █ _"
+    else:
+        label += "█ █ █ █"
+    return label
 
 
 def update_labels():
