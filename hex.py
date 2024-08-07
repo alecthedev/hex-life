@@ -82,14 +82,24 @@ class Hex:
 
 
 class HexManager:
-    def __init__(self, origin: Vector2, hex_size: int, world_size: int, canvas):
+    def __init__(self, origin: Vector2, canvas):
         self.origin = origin
-        self.hex_size = hex_size
-        self.world_size = world_size
         self.canvas = canvas
         self.hexes = {}
         self.generation = 0
         self.running = False
+
+        self.world_sizes = {
+            "small": (15, 18),
+            "medium": (10, 28),
+            "large": (7, 40),
+            "huge": (4, 70),
+        }
+
+        self.curr_size = self.world_sizes["medium"]
+
+        self.hex_size = self.curr_size[0]
+        self.world_size = self.curr_size[1]
 
         self.generate_world()
 
@@ -105,6 +115,34 @@ class HexManager:
         self.canvas.bind(
             "<B3-Motion>", lambda event, state=0: self.set_hex_state(event, state)
         )
+
+    def update_size(self, hex_size, world_size):
+        self.hex_size = hex_size
+        self.world_size = world_size
+
+    def increase_world_size(self):
+        if self.curr_size == self.world_sizes["small"]:
+            self.curr_size = self.world_sizes["medium"]
+        elif self.curr_size == self.world_sizes["medium"]:
+            self.curr_size = self.world_sizes["large"]
+        elif self.curr_size == self.world_sizes["large"]:
+            self.curr_size = self.world_sizes["huge"]
+        else:
+            return
+        self.update_size(self.curr_size[0], self.curr_size[1])
+        self.reset_world()
+
+    def decrease_world_size(self):
+        if self.curr_size == self.world_sizes["huge"]:
+            self.curr_size = self.world_sizes["large"]
+        elif self.curr_size == self.world_sizes["large"]:
+            self.curr_size = self.world_sizes["medium"]
+        elif self.curr_size == self.world_sizes["medium"]:
+            self.curr_size = self.world_sizes["small"]
+        else:
+            return
+        self.update_size(self.curr_size[0], self.curr_size[1])
+        self.reset_world()
 
     def update_world(self, event=None):
         # while self.running:
@@ -125,6 +163,9 @@ class HexManager:
             self.canvas.after(250, self.update_world)
 
     def reset_world(self, event=None):
+        self.canvas.create_rectangle(
+            0, 0, self.canvas.winfo_width(), self.canvas.winfo_height(), fill="black"
+        )
         self.running = False
         self.generation = 0
         self.hexes = {}

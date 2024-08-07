@@ -8,15 +8,6 @@ print("Launching Simulation...")
 
 WIDTH, HEIGHT = 1000, 875
 
-world_sizes = {
-    "small": (15, 18),
-    "medium": (10, 28),
-    "large": (7, 40),
-    "huge": (4, 70),
-}
-
-curr_world_size = world_sizes["medium"]
-
 # create window and frames
 root = Tk()
 root.title("Hex Life - github.com/alecthedev")
@@ -30,9 +21,7 @@ settings = ttk.Frame(options, padding=(0, 100))
 # canvas for drawing and simulation manager
 canvas = Canvas(content, width=WIDTH, height=HEIGHT, bg="black")
 
-hex_manager = HexManager(
-    Vector2(WIDTH // 2, HEIGHT // 2), curr_world_size[0], curr_world_size[1], canvas
-)
+hex_manager = HexManager(Vector2(WIDTH // 2, HEIGHT // 2), canvas)
 
 generation_label = ttk.Label(root, text=f"Generation: {hex_manager.generation}")
 instructions = ttk.Label(
@@ -68,6 +57,12 @@ reset_button = ttk.Button(settings, text="Reset World", command=hex_manager.rese
 randomize_button = ttk.Button(
     settings, text="Randomize", command=hex_manager.seed_world
 )
+size_dec_button = ttk.Button(
+    settings, text="World Size −", command=hex_manager.decrease_world_size
+)
+size_inc_button = ttk.Button(
+    settings, text="World Size +", command=hex_manager.increase_world_size
+)
 
 # root grid
 content.grid(column=0, row=1, columnspan=2)
@@ -93,8 +88,8 @@ speed_inc_button.grid(column=1, row=2)
 settings_label.grid(column=0, row=0, columnspan=2)
 reset_button.grid(column=0, row=1)
 randomize_button.grid(column=1, row=1)
-
-root.bind("<Return>", hex_manager.update_world)
+size_dec_button.grid(column=0, row=2)
+size_inc_button.grid(column=1, row=2)
 
 
 def update_labels():
