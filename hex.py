@@ -144,32 +144,31 @@ class HexManager:
             else:
                 self.curr_speed = self.speeds["fast"]
 
-    def update_size(self, hex_size, world_size):
-        self.hex_size = hex_size
-        self.world_size = world_size
-        self.reset_world()
-
-    def increase_world_size(self):
+    def update_size(self, increasing: bool):
         if self.curr_size == self.world_sizes["small"]:
-            self.curr_size = self.world_sizes["medium"]
+            if increasing:
+                self.curr_size = self.world_sizes["medium"]
+            else:
+                return
         elif self.curr_size == self.world_sizes["medium"]:
-            self.curr_size = self.world_sizes["large"]
+            if increasing:
+                self.curr_size = self.world_sizes["large"]
+            else:
+                self.curr_size = self.world_sizes["small"]
         elif self.curr_size == self.world_sizes["large"]:
-            self.curr_size = self.world_sizes["huge"]
-        else:
-            return
-        self.update_size(self.curr_size[0], self.curr_size[1])
+            if increasing:
+                self.curr_size = self.world_sizes["huge"]
+            else:
+                self.curr_size = self.world_sizes["medium"]
+        elif self.curr_size == self.world_sizes["huge"]:
+            if increasing:
+                return
+            else:
+                self.curr_size = self.world_sizes["large"]
 
-    def decrease_world_size(self):
-        if self.curr_size == self.world_sizes["huge"]:
-            self.curr_size = self.world_sizes["large"]
-        elif self.curr_size == self.world_sizes["large"]:
-            self.curr_size = self.world_sizes["medium"]
-        elif self.curr_size == self.world_sizes["medium"]:
-            self.curr_size = self.world_sizes["small"]
-        else:
-            return
-        self.update_size(self.curr_size[0], self.curr_size[1])
+        self.hex_size = self.curr_size[0]
+        self.world_size = self.curr_size[1]
+        self.reset_world()
 
     def update_world(self, event=None):
         # while self.running:

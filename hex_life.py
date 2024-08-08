@@ -65,10 +65,14 @@ randomize_button = ttk.Button(
     settings, text="Randomize", command=hex_manager.seed_world
 )
 size_dec_button = ttk.Button(
-    settings, text="World Size −", command=hex_manager.decrease_world_size
+    settings,
+    text="World Size −",
+    command=lambda: hex_manager.update_size(increasing=False),
 )
 size_inc_button = ttk.Button(
-    settings, text="World Size +", command=hex_manager.increase_world_size
+    settings,
+    text="World Size +",
+    command=lambda: hex_manager.update_size(increasing=True),
 )
 size_label_text = "World Size: █ █ _ _"
 size_label = ttk.Label(settings, text=size_label_text)
