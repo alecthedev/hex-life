@@ -122,25 +122,27 @@ class HexManager:
             "<B3-Motion>", lambda event, state=0: self.set_hex_state(event, state)
         )
 
-    def increase_speed(self, event=None):
+    def update_speed(self, increasing: bool):
         if self.curr_speed == self.speeds["slow"]:
-            self.curr_speed = self.speeds["normal"]
+            if increasing:
+                self.curr_speed = self.speeds["normal"]
+            else:
+                return
         elif self.curr_speed == self.speeds["normal"]:
-            self.curr_speed = self.speeds["fast"]
+            if increasing:
+                self.curr_speed = self.speeds["fast"]
+            else:
+                self.curr_speed = self.speeds["slow"]
         elif self.curr_speed == self.speeds["fast"]:
-            self.curr_speed = self.speeds["faster"]
-        else:
-            return
-
-    def decrease_speed(self, event=None):
-        if self.curr_speed == self.speeds["faster"]:
-            self.curr_speed = self.speeds["fast"]
-        elif self.curr_speed == self.speeds["fast"]:
-            self.curr_speed = self.speeds["normal"]
-        elif self.curr_speed == self.speeds["normal"]:
-            self.curr_speed = self.speeds["slow"]
-        else:
-            return
+            if increasing:
+                self.curr_speed = self.speeds["faster"]
+            else:
+                self.curr_speed = self.speeds["normal"]
+        elif self.curr_speed == self.speeds["faster"]:
+            if increasing:
+                return
+            else:
+                self.curr_speed = self.speeds["fast"]
 
     def update_size(self, hex_size, world_size):
         self.hex_size = hex_size

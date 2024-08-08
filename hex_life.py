@@ -27,8 +27,8 @@ generation_label = ttk.Label(content, text=f"Generation: {hex_manager.generation
 instructions = ttk.Label(
     options,
     text="""
-    Welcome to Hex Life!
 
+    Welcome to Hex Life!
 
 
 
@@ -48,10 +48,12 @@ play_pause_button = ttk.Button(
 )
 step_button = ttk.Button(controls, text="Next Gen", command=hex_manager.update_world)
 speed_inc_button = ttk.Button(
-    controls, text="Speed +", command=hex_manager.increase_speed
+    controls, text="Speed +", command=lambda: hex_manager.update_speed(increasing=True)
 )
 speed_dec_button = ttk.Button(
-    controls, text="Speed −", command=hex_manager.decrease_speed
+    controls,
+    text="Speed −",
+    command=lambda: hex_manager.update_speed(increasing=False),
 )
 speed_label_text = "Speed: █ █ _ _"
 speed_label = ttk.Label(controls, text=speed_label_text)
