@@ -1,6 +1,5 @@
 import random as rand
 from math import cos, pi, sin, sqrt
-from time import sleep
 
 from vector2 import Vector2
 
