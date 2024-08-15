@@ -67,6 +67,11 @@ I did not include all rotations of each oscillator.
 | Jumper       | ![jumper](https://github.com/user-attachments/assets/d14479be-7dea-425f-8348-e7e481d7596c) |
 | Big-Dancer   | ![big-dancer](https://github.com/user-attachments/assets/e42e5c55-0a5e-43af-995f-7fbbb50f1e6b) |
 
+| **Period 10** |              |
+| ------------- | ------------ |
+| Trefoil       |  ![trefoil](https://github.com/user-attachments/assets/9fc8b92b-93cc-43f0-a826-cfbfb6ba068e) |
+
+
 | **Period 12** |              |
 | ------------- | ------------ |
 | Koi           | ![koi](https://github.com/user-attachments/assets/1e72a036-6f2d-476c-b179-e70b8ada390c) |
@@ -99,4 +104,6 @@ cd hex-life
 #### 3. Enjoy!
 
 If you happen to use this program and discover any new patterns please don't hesitate to contact me! I would love to add new 'creatures' to the catalog.
+
+For example, I discovered 'trefoil' a week after recording the others!
 
